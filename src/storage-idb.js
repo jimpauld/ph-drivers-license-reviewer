@@ -68,6 +68,10 @@ export function createIndexedDBStorage() {
       const d = await db();
       return promisifyRequest(tx(d, 'bookmarks', 'readonly').getAll());
     },
+    async removeBookmark(questionId) {
+      const d = await db();
+      await promisifyRequest(tx(d, 'bookmarks', 'readwrite').delete(questionId));
+    },
     async saveResume(state) {
       const d = await db();
       await promisifyRequest(tx(d, 'resume', 'readwrite').put({ ...state }, 'current'));

@@ -12,6 +12,7 @@ let bank = null;
 let session = null;
 let practice = null;
 let timerId = null;
+let pendingResume = null;
 
 function getSystemPreference() {
   return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : null;
@@ -73,6 +74,24 @@ function renderSourceLink(question) {
     return el('a', { class: 'feedback-source', href: question.sourceUrl, target: '_blank', rel: 'noopener noreferrer', text: `Show source: ${question.source}` });
   }
   return el('p', { class: 'feedback-source', text: `Source: ${question.source}` });
+}
+
+function renderQuestionActions(question, selected) {
+  return el('div', { class: 'question-actions' },
+    el('button', { class: 'question-action-btn', onclick: () => openFlagModal(question, selected) }, 'Flag this question'),
+    el('button', { class: 'question-action-btn', onclick: () => toggleBookmark(question) }, 'Bookmark')
+  );
+}
+
+const MODE_LABELS = {
+  student: 'Student Permit',
+  'non-pro-40': 'Non-Professional (40)',
+  'non-pro-60': 'Non-Professional (60)',
+  pro: 'Professional'
+};
+
+function modeLabel(mode) {
+  return MODE_LABELS[mode] || mode.replace(/-/g, ' ');
 }
 
 function renderModeSelect() {
@@ -176,7 +195,7 @@ function renderQuiz() {
       el('div', { class: 'question' },
         q.image ? el('img', { class: 'question-image', src: q.image, alt: '' }) : null,
         el('p', { class: 'question-text', text: q.question }),
-        el('button', { class: 'flag-btn', onclick: () => openFlagModal(q, session.answers[session.currentIndex]) }, 'Flag this question')
+        renderQuestionActions(q, session.answers[session.currentIndex])
       ),
       el('div', { class: 'options' }, ...options),
       nav,
@@ -336,46 +355,75 @@ async function init() {
     const idsMatch = resumed.questionIds.length === session.questions.length
       && resumed.questionIds.every((id, i) => session.questions[i].id === id);
     if (idsMatch) {
-      session = goTo(session, resumed.currentIndex);
-      for (let i = 0; i < session.answers.length; i++) {
-        if (resumed.answers[i] !== null && resumed.answers[i] !== undefined) {
-          session = goTo(session, i);
-          session = answer(session, resumed.answers[i]);
-        }
-      }
-      session = goTo(session, resumed.currentIndex);
-      session.startedAt = Date.now() - (session.config.timerMinutes * 60 * 1000 - resumed.timeRemainingMs);
-      renderQuiz();
-      startTimer();
+      pendingResume = resumed;
     } else {
       await storage.clearResume();
-      renderHome();
     }
-  } else {
-    renderHome();
   }
+  session = null;
+  renderHome();
+}
+
+async function resumeExam() {
+  const resumed = pendingResume;
+  if (!resumed) return;
+  session = createSession(bank, resumed.mode, resumed.seed);
+  session = goTo(session, resumed.currentIndex);
+  for (let i = 0; i < session.answers.length; i++) {
+    if (resumed.answers[i] !== null && resumed.answers[i] !== undefined) {
+      session = goTo(session, i);
+      session = answer(session, resumed.answers[i]);
+    }
+  }
+  session = goTo(session, resumed.currentIndex);
+  session.startedAt = Date.now() - (session.config.timerMinutes * 60 * 1000 - resumed.timeRemainingMs);
+  pendingResume = null;
+  renderQuiz();
+  startTimer();
+}
+
+async function discardResume() {
+  pendingResume = null;
+  await storage.clearResume();
+  renderHome();
 }
 
 function renderHome() {
   const main = document.getElementById('app-main');
   main.innerHTML = '';
-  main.append(
-    el('section', { class: 'screen' },
-      el('h2', { class: 'screen-title', text: 'PH Driver\'s License Reviewer' }),
-      el('p', { class: 'screen-sub', text: 'Practice the Philippine LTO theoretical driving exam. No account. No tracking. Works offline.' }),
-      el('div', { class: 'mode-grid' },
-        el('button', { class: 'mode-card', onclick: renderModeSelect },
-          el('span', { class: 'mode-card-title', text: 'Mock Exam' }),
-          el('span', { class: 'mode-card-desc', text: 'Timed, graded, mimics the real LTO exam format.' })
-        ),
-        el('button', { class: 'mode-card', onclick: renderCategorySelect },
-          el('span', { class: 'mode-card-title', text: 'Practice by Category' }),
-          el('span', { class: 'mode-card-desc', text: 'Untimed, with explanations and source links.' })
+  const children = [
+    el('h2', { class: 'screen-title', text: 'PH Driver\'s License Reviewer' }),
+    el('p', { class: 'screen-sub', text: 'Practice the Philippine LTO theoretical driving exam. No account. No tracking. Works offline.' })
+  ];
+  if (pendingResume) {
+    children.push(
+      el('div', { class: 'resume-prompt' },
+        el('span', { class: 'resume-text', text: 'You have an interrupted exam.' }),
+        el('div', { class: 'resume-actions' },
+          el('button', { class: 'btn btn-primary', onclick: resumeExam }, 'Resume'),
+          el('button', { class: 'btn btn-secondary', onclick: discardResume }, 'Discard')
         )
+      )
+    );
+  }
+  children.push(
+    el('div', { class: 'mode-grid' },
+      el('button', { class: 'mode-card', onclick: renderModeSelect },
+        el('span', { class: 'mode-card-title', text: 'Mock Exam' }),
+        el('span', { class: 'mode-card-desc', text: 'Timed, graded, mimics the real LTO exam format.' })
       ),
+      el('button', { class: 'mode-card', onclick: renderCategorySelect },
+        el('span', { class: 'mode-card-title', text: 'Practice by Category' }),
+        el('span', { class: 'mode-card-desc', text: 'Untimed, with explanations and source links.' })
+      )
+    ),
+    el('div', { class: 'home-links' },
+      el('button', { class: 'link-btn', onclick: renderHistory }, 'Exam history'),
+      el('button', { class: 'link-btn', onclick: renderBookmarks }, 'Bookmarks'),
       el('button', { class: 'link-btn', onclick: downloadReports }, 'Download my reports')
     )
   );
+  main.append(el('section', { class: 'screen' }, ...children));
 }
 
 function categoriesInBank() {
@@ -384,6 +432,72 @@ function categoriesInBank() {
     counts[q.category] = (counts[q.category] || 0) + 1;
   }
   return Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]));
+}
+
+async function renderHistory() {
+  const main = document.getElementById('app-main');
+  main.innerHTML = '';
+  const history = await storage.getHistory();
+  const items = history.length === 0
+    ? [el('p', { class: 'screen-sub', text: 'No exams yet. Take a mock exam to see your history here.' })]
+    : history.map((exam) =>
+      el('div', { class: 'history-item' },
+        el('div', { class: 'history-row' },
+          el('span', { class: 'history-mode', text: modeLabel(exam.mode) }),
+          el('span', { class: 'history-badge ' + (exam.passed ? 'pass' : 'fail'), text: exam.passed ? 'PASS' : 'FAIL' })
+        ),
+        el('div', { class: 'history-row history-meta' },
+          el('span', { text: `${exam.correct}/${exam.total} (${Math.round(exam.score * 100)}%)` }),
+          el('span', { text: new Date(exam.finishedAt).toLocaleString() })
+        )
+      )
+    );
+  main.append(
+    el('section', { class: 'screen' },
+      el('button', { class: 'back-link', onclick: renderHome, text: '← Back' }),
+      el('h2', { class: 'screen-title', text: 'Exam history' }),
+      el('div', { class: 'history-list' }, ...items)
+    )
+  );
+}
+
+async function renderBookmarks() {
+  const main = document.getElementById('app-main');
+  main.innerHTML = '';
+  const bookmarks = await storage.getBookmarks();
+  const items = bookmarks.length === 0
+    ? [el('p', { class: 'screen-sub', text: 'No bookmarks yet. Tap the bookmark button on a question to save it here.' })]
+    : bookmarks.map((bm) => {
+      const q = bank.questions.find((x) => x.id === bm.questionId) || { question: `(missing) ${bm.questionId}`, options: [] };
+      return el('div', { class: 'review-item' },
+        el('p', { class: 'review-question', text: q.question }),
+        el('button', { class: 'link-btn', onclick: () => removeBookmark(bm.questionId) }, 'Remove bookmark')
+      );
+    });
+  main.append(
+    el('section', { class: 'screen' },
+      el('button', { class: 'back-link', onclick: renderHome, text: '← Back' }),
+      el('h2', { class: 'screen-title', text: 'Bookmarks' }),
+      el('div', { class: 'review-list' }, ...items)
+    )
+  );
+}
+
+async function toggleBookmark(question) {
+  const bookmarks = await storage.getBookmarks();
+  const exists = bookmarks.some((b) => b.questionId === question.id);
+  if (exists) {
+    await storage.removeBookmark(question.id);
+    toast('Bookmark removed');
+  } else {
+    await storage.addBookmark({ questionId: question.id, at: Date.now() });
+    toast('Bookmarked');
+  }
+}
+
+async function removeBookmark(questionId) {
+  await storage.removeBookmark(questionId);
+  renderBookmarks();
 }
 
 function renderCategorySelect() {
@@ -458,7 +572,7 @@ function renderPractice() {
       el('div', { class: 'question' },
         q.image ? el('img', { class: 'question-image', src: q.image, alt: '' }) : null,
         el('p', { class: 'question-text', text: q.question }),
-        el('button', { class: 'flag-btn', onclick: () => openFlagModal(q, practice.answers[practice.currentIndex]) }, 'Flag this question')
+        renderQuestionActions(q, practice.answers[practice.currentIndex])
       ),
       el('div', { class: 'options' }, ...options),
       feedback,

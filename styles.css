@@ -489,7 +489,7 @@ html, body {
   font-size: 0.9rem;
 }
 
-.flag-btn, .link-btn {
+.flag-btn, .link-btn, .question-action-btn {
   display: inline-block;
   background: none;
   border: none;
@@ -507,6 +507,10 @@ html, body {
 
 .link-btn {
   margin-top: 1rem;
+}
+
+.question-action-btn {
+  margin-top: 0;
 }
 
 .modal-overlay {
@@ -581,4 +585,89 @@ html, body {
   font-weight: 600;
   z-index: 200;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.question-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.home-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin-top: 1rem;
+}
+
+.resume-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: color-mix(in srgb, var(--accent) 10%, var(--bg-elevated));
+  border: 1px solid var(--accent);
+  border-radius: 0.6rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.resume-text {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.resume-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.history-item {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.history-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-mode {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.history-meta {
+  margin-top: 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.history-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+.history-badge.pass {
+  background: color-mix(in srgb, var(--success) 20%, transparent);
+  color: var(--success);
+}
+
+.history-badge.fail {
+  background: color-mix(in srgb, var(--danger) 20%, transparent);
+  color: var(--danger);
 }

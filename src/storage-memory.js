@@ -28,6 +28,9 @@ export function createMemoryStorage() {
     async getBookmarks() {
       return [...bookmarks.values()];
     },
+    async removeBookmark(questionId) {
+      bookmarks.delete(questionId);
+    },
     async saveResume(state) {
       resume = { ...state, answers: [...(state.answers || [])], questionIds: [...(state.questionIds || [])] };
     },
