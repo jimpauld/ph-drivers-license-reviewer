@@ -1,0 +1,22 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Build output
+dist/
+build/
+
+# Node (if ever used for tooling)
+node_modules/
+
+# Local env
+.env
+.env.local
+
+# Cloudflare
+.wrangler/
