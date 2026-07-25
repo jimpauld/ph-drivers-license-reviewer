@@ -1,9 +1,12 @@
 import { resolveTheme, applyTheme } from './theme.js';
 import { createSession, answer, goTo, timeRemainingMs, isExpired, isWarning, result } from './exam-session.js';
 import { createPracticeSession, answer as practiceAnswer, next as practiceNext, wrongAnswers as practiceWrong } from './practice-session.js';
+import { buildIssueUrl, buildFlagPayload } from './report.js';
 import { createIndexedDBStorage } from './storage-idb.js';
 
 const THEME_KEY = 'phdlr:theme';
+const REPO = 'jimpauld/ph-drivers-license-reviewer';
+const APP_VERSION = '1.0.0';
 const storage = createIndexedDBStorage();
 let bank = null;
 let session = null;
@@ -172,7 +175,8 @@ function renderQuiz() {
       progress,
       el('div', { class: 'question' },
         q.image ? el('img', { class: 'question-image', src: q.image, alt: '' }) : null,
-        el('p', { class: 'question-text', text: q.question })
+        el('p', { class: 'question-text', text: q.question }),
+        el('button', { class: 'flag-btn', onclick: () => openFlagModal(q, session.answers[session.currentIndex]) }, 'Flag this question')
       ),
       el('div', { class: 'options' }, ...options),
       nav,
@@ -271,6 +275,58 @@ function renderResults(r) {
   );
 }
 
+function openFlagModal(question, selected) {
+  const existing = document.getElementById('flag-modal');
+  if (existing) existing.remove();
+  const modal = el('div', { id: 'flag-modal', class: 'modal-overlay', onclick: (e) => { if (e.target === modal) modal.remove(); } },
+    el('div', { class: 'modal' },
+      el('h3', { class: 'modal-title', text: 'Flag this question' }),
+      el('p', { class: 'modal-sub', text: question.question }),
+      el('label', { class: 'modal-label', for: 'flag-feedback', text: 'What\'s wrong?' }),
+      el('textarea', { id: 'flag-feedback', class: 'modal-textarea', rows: 3, placeholder: 'e.g. the correct answer is wrong, the explanation is unclear...' }),
+      el('div', { class: 'modal-actions' },
+        el('button', { class: 'btn btn-secondary', onclick: () => modal.remove() }, 'Cancel'),
+        el('button', { class: 'btn btn-primary', onclick: () => submitFlag(question, selected, modal) }, 'Report via GitHub'),
+        el('button', { class: 'btn btn-secondary', onclick: () => saveFlagLocal(question, selected, modal) }, 'Save locally')
+      )
+    )
+  );
+  document.body.append(modal);
+  document.getElementById('flag-feedback').focus();
+}
+
+async function submitFlag(question, selected, modal) {
+  const feedback = document.getElementById('flag-feedback').value.trim();
+  await storage.flagQuestion(buildFlagPayload(question, { selected, feedback, appVersion: APP_VERSION }));
+  const url = buildIssueUrl(REPO, question, { selected, feedback, appVersion: APP_VERSION });
+  modal.remove();
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+async function saveFlagLocal(question, selected, modal) {
+  const feedback = document.getElementById('flag-feedback').value.trim();
+  await storage.flagQuestion(buildFlagPayload(question, { selected, feedback, appVersion: APP_VERSION }));
+  modal.remove();
+  toast('Saved locally');
+}
+
+async function downloadReports() {
+  const blob = await storage.exportFlags();
+  const json = JSON.stringify(blob, null, 2);
+  const a = el('a');
+  a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+  a.download = `phdlr-flags-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.append(a);
+  a.click();
+  a.remove();
+}
+
+function toast(message) {
+  const t = el('div', { class: 'toast', text: message });
+  document.body.append(t);
+  setTimeout(() => t.remove(), 2000);
+}
+
 async function init() {
   initTheme();
   await loadBank();
@@ -316,7 +372,8 @@ function renderHome() {
           el('span', { class: 'mode-card-title', text: 'Practice by Category' }),
           el('span', { class: 'mode-card-desc', text: 'Untimed, with explanations and source links.' })
         )
-      )
+      ),
+      el('button', { class: 'link-btn', onclick: downloadReports }, 'Download my reports')
     )
   );
 }
@@ -400,7 +457,8 @@ function renderPractice() {
       ),
       el('div', { class: 'question' },
         q.image ? el('img', { class: 'question-image', src: q.image, alt: '' }) : null,
-        el('p', { class: 'question-text', text: q.question })
+        el('p', { class: 'question-text', text: q.question }),
+        el('button', { class: 'flag-btn', onclick: () => openFlagModal(q, practice.answers[practice.currentIndex]) }, 'Flag this question')
       ),
       el('div', { class: 'options' }, ...options),
       feedback,
