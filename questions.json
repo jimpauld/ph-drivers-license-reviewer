@@ -1,0 +1,228 @@
+{
+  "version": "1.0.0",
+  "language": "en",
+  "questions": [
+    {
+      "id": "q-001",
+      "category": "road-signs",
+      "subcategory": "regulatory",
+      "difficulty": "easy",
+      "question": "A red, octagonal road sign means:",
+      "image": "signs/stop.svg",
+      "options": ["STOP", "YIELD", "NO ENTRY", "SPEED LIMIT"],
+      "correct": 0,
+      "explanation": "A red octagon is the standard STOP sign shape; drivers must come to a complete stop.",
+      "source": "FDM Vol. 1, Road Traffic Signs",
+      "sourceUrl": "https://lto.gov.ph/wp-content/uploads/2023/10/FDM-Vol.-1-2nd-Edition.pdf"
+    },
+    {
+      "id": "q-002",
+      "category": "road-signs",
+      "subcategory": "regulatory",
+      "difficulty": "easy",
+      "question": "A red circle with a white horizontal bar across the middle means:",
+      "options": ["NO PARKING", "NO ENTRY", "NO U-TURN", "ONE WAY"],
+      "correct": 1,
+      "explanation": "A red circle with a white horizontal bar is the NO ENTRY sign.",
+      "source": "FDM Vol. 1, Road Traffic Signs"
+    },
+    {
+      "id": "q-003",
+      "category": "road-signs",
+      "subcategory": "warning",
+      "difficulty": "easy",
+      "question": "An inverted (upside-down) triangular sign means:",
+      "options": ["STOP", "YIELD (give way)", "NO OVERTAKING", "ROUNDABOUT AHEAD"],
+      "correct": 1,
+      "explanation": "An inverted triangle is the YIELD / give-way sign.",
+      "source": "FDM Vol. 1, Road Traffic Signs"
+    },
+    {
+      "id": "q-004",
+      "category": "road-signs",
+      "subcategory": "warning",
+      "difficulty": "medium",
+      "question": "A yellow diamond-shaped sign generally indicates:",
+      "options": ["A regulatory rule you must obey", "A warning about road conditions ahead", "Tourist information", "A mandatory instruction"],
+      "correct": 1,
+      "explanation": "Yellow diamond signs are warning signs alerting drivers to conditions ahead.",
+      "source": "FDM Vol. 1, Road Traffic Signs"
+    },
+    {
+      "id": "q-005",
+      "category": "road-signs",
+      "subcategory": "informational",
+      "difficulty": "easy",
+      "question": "A blue rectangular road sign generally provides:",
+      "options": ["A prohibition", "A warning", "Information or guidance", "A parking restriction"],
+      "correct": 2,
+      "explanation": "Blue rectangular signs are informational/guide signs.",
+      "source": "FDM Vol. 1, Road Traffic Signs"
+    },
+    {
+      "id": "q-006",
+      "category": "traffic-rules",
+      "subcategory": "right-of-way",
+      "difficulty": "medium",
+      "question": "Two vehicles arrive at an uncontrolled intersection at the same time. Who has the right of way?",
+      "options": ["The vehicle on the left", "The vehicle on the right", "The faster vehicle", "The larger vehicle"],
+      "correct": 1,
+      "explanation": "When two vehicles arrive simultaneously, the vehicle on the right has the right of way.",
+      "source": "RA 4136, Section 42"
+    },
+    {
+      "id": "q-007",
+      "category": "traffic-rules",
+      "subcategory": "overtaking",
+      "difficulty": "medium",
+      "question": "Overtaking another vehicle on the right is:",
+      "options": ["Always allowed", "Allowed only on multi-lane roads", "Prohibited in most cases", "Required at intersections"],
+      "correct": 2,
+      "explanation": "Overtaking on the right is generally prohibited; overtaking must be done on the left.",
+      "source": "RA 4136, Section 36"
+    },
+    {
+      "id": "q-008",
+      "category": "speed-limits",
+      "subcategory": "school-zone",
+      "difficulty": "medium",
+      "question": "What is the maximum speed limit in a school zone?",
+      "options": ["10 kph", "20 kph", "30 kph", "40 kph"],
+      "correct": 1,
+      "explanation": "The maximum speed in a school zone is 20 kph to protect children.",
+      "source": "RA 4136, Section 35"
+    },
+    {
+      "id": "q-009",
+      "category": "speed-limits",
+      "subcategory": "national-highway",
+      "difficulty": "medium",
+      "question": "On a national highway, what is the maximum speed for a passenger car?",
+      "options": ["60 kph", "80 kph", "100 kph", "120 kph"],
+      "correct": 1,
+      "explanation": "The maximum speed for passenger cars on national highways is 80 kph.",
+      "source": "RA 4136, Section 35"
+    },
+    {
+      "id": "q-010",
+      "category": "defensive-driving",
+      "subcategory": "lighting",
+      "difficulty": "easy",
+      "question": "When must you turn on your headlights during the day?",
+      "options": ["Only at night", "Only in tunnels", "When driving through rain or poor visibility", "Never"],
+      "correct": 2,
+      "explanation": "Headlights must be used at night and during rain or poor visibility.",
+      "source": "RA 4136, Section 34"
+    },
+    {
+      "id": "q-011",
+      "category": "defensive-driving",
+      "subcategory": "following-distance",
+      "difficulty": "medium",
+      "question": "A safe following distance under normal conditions is often described as:",
+      "options": ["1 second behind", "2-3 seconds behind", "5 meters behind", "Touching the bumper ahead"],
+      "correct": 1,
+      "explanation": "Maintain at least a 2-3 second following distance to allow time to react.",
+      "source": "FDM Vol. 1, Driving Fundamentals"
+    },
+    {
+      "id": "q-012",
+      "category": "licensing",
+      "subcategory": "student-permit",
+      "difficulty": "easy",
+      "question": "What is the minimum age to apply for a student driver's permit?",
+      "options": ["15 years old", "16 years old", "17 years old", "18 years old"],
+      "correct": 1,
+      "explanation": "The minimum age to apply for a student permit is 16 years old.",
+      "source": "RA 4136, Section 20"
+    },
+    {
+      "id": "q-013",
+      "category": "licensing",
+      "subcategory": "general",
+      "difficulty": "medium",
+      "question": "Which Republic Act is the foundation law for land transportation and traffic rules in the Philippines?",
+      "options": ["RA 8750", "RA 4136", "RA 10913", "RA 10054"],
+      "correct": 1,
+      "explanation": "RA 4136 is the Land Transportation and Traffic Code, the foundation traffic law.",
+      "source": "RA 4136"
+    },
+    {
+      "id": "q-014",
+      "category": "vehicle-equipment",
+      "subcategory": "ewd",
+      "difficulty": "medium",
+      "question": "An Early Warning Device (EWD) placed behind a stalled vehicle is typically:",
+      "options": ["A green triangle", "A red reflective triangle", "A blue circle", "A yellow square"],
+      "correct": 1,
+      "explanation": "The EWD is a red reflective triangle placed to warn oncoming traffic of a stalled vehicle.",
+      "source": "FDM Vol. 1, Vehicle Equipment"
+    },
+    {
+      "id": "q-015",
+      "category": "vehicle-equipment",
+      "subcategory": "motorcycle",
+      "difficulty": "easy",
+      "question": "Riders and passengers of motorcycles are required to wear:",
+      "options": ["A hat", "A helmet", "Goggles only", "Nothing is required"],
+      "correct": 1,
+      "explanation": "Both rider and passenger must wear a protective helmet under the Motorcycle Helmet Act.",
+      "source": "RA 10054"
+    },
+    {
+      "id": "q-016",
+      "category": "penalties",
+      "subcategory": "parking",
+      "difficulty": "medium",
+      "question": "Parking is prohibited within how many meters of an intersection?",
+      "options": ["3 meters", "5 meters", "10 meters", "20 meters"],
+      "correct": 1,
+      "explanation": "Parking within 5 meters of an intersection is prohibited.",
+      "source": "RA 4136, Section 56"
+    },
+    {
+      "id": "q-017",
+      "category": "republic-acts",
+      "subcategory": "seat-belts",
+      "difficulty": "easy",
+      "question": "Which law requires the use of seat belts by drivers and front-seat passengers?",
+      "options": ["RA 4136", "RA 8750", "RA 10586", "RA 11229"],
+      "correct": 1,
+      "explanation": "RA 8750 is the Seat Belts Use Act.",
+      "source": "RA 8750"
+    },
+    {
+      "id": "q-018",
+      "category": "republic-acts",
+      "subcategory": "distracted-driving",
+      "difficulty": "medium",
+      "question": "Which law prohibits the use of mobile phones while driving, except for hands-free use?",
+      "options": ["RA 10913", "RA 10054", "RA 8750", "RA 10586"],
+      "correct": 0,
+      "explanation": "RA 10913 is the Anti-Distracted Driving Act.",
+      "source": "RA 10913"
+    },
+    {
+      "id": "q-019",
+      "category": "republic-acts",
+      "subcategory": "drunk-driving",
+      "difficulty": "medium",
+      "question": "Which law penalizes driving under the influence of alcohol or dangerous drugs?",
+      "options": ["RA 11229", "RA 10586", "RA 10913", "RA 4136"],
+      "correct": 1,
+      "explanation": "RA 10586 is the Anti-Drunk and Drugged Driving Act.",
+      "source": "RA 10586"
+    },
+    {
+      "id": "q-020",
+      "category": "expressway",
+      "subcategory": "motorcycle",
+      "difficulty": "medium",
+      "question": "What is the minimum motorcycle engine displacement allowed on Philippine expressways?",
+      "options": ["150cc", "250cc", "400cc", "500cc"],
+      "correct": 2,
+      "explanation": "Motorcycles with at least 400cc displacement are allowed on expressways.",
+      "source": "DOTC Department Order, Expressway Rules"
+    }
+  ]
+}
