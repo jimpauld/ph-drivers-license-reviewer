@@ -1,11 +1,13 @@
 import { resolveTheme, applyTheme } from './theme.js';
 import { createSession, answer, goTo, timeRemainingMs, isExpired, isWarning, result } from './exam-session.js';
+import { createPracticeSession, answer as practiceAnswer, next as practiceNext, wrongAnswers as practiceWrong } from './practice-session.js';
 import { createIndexedDBStorage } from './storage-idb.js';
 
 const THEME_KEY = 'phdlr:theme';
 const storage = createIndexedDBStorage();
 let bank = null;
 let session = null;
+let practice = null;
 let timerId = null;
 
 function getSystemPreference() {
@@ -61,6 +63,13 @@ function el(tag, props = {}, ...children) {
     node.append(c.nodeType ? c : document.createTextNode(String(c)));
   }
   return node;
+}
+
+function renderSourceLink(question) {
+  if (question.sourceUrl) {
+    return el('a', { class: 'feedback-source', href: question.sourceUrl, target: '_blank', rel: 'noopener noreferrer', text: `Show source: ${question.source}` });
+  }
+  return el('p', { class: 'feedback-source', text: `Source: ${question.source}` });
 }
 
 function renderModeSelect() {
@@ -255,7 +264,8 @@ function renderResults(r) {
       el('h3', { class: 'results-section-title', text: 'Score by category' }),
       el('div', { class: 'cat-list' }, ...categoryRows),
       el('div', { class: 'results-actions' },
-        el('button', { class: 'btn btn-primary', onclick: renderModeSelect }, 'Take another exam')
+        el('button', { class: 'btn btn-primary', onclick: renderModeSelect }, 'Take another exam'),
+        el('button', { class: 'btn btn-secondary', onclick: renderHome }, 'Home')
       )
     )
   );
@@ -283,11 +293,172 @@ async function init() {
       startTimer();
     } else {
       await storage.clearResume();
-      renderModeSelect();
+      renderHome();
     }
   } else {
-    renderModeSelect();
+    renderHome();
   }
+}
+
+function renderHome() {
+  const main = document.getElementById('app-main');
+  main.innerHTML = '';
+  main.append(
+    el('section', { class: 'screen' },
+      el('h2', { class: 'screen-title', text: 'PH Driver\'s License Reviewer' }),
+      el('p', { class: 'screen-sub', text: 'Practice the Philippine LTO theoretical driving exam. No account. No tracking. Works offline.' }),
+      el('div', { class: 'mode-grid' },
+        el('button', { class: 'mode-card', onclick: renderModeSelect },
+          el('span', { class: 'mode-card-title', text: 'Mock Exam' }),
+          el('span', { class: 'mode-card-desc', text: 'Timed, graded, mimics the real LTO exam format.' })
+        ),
+        el('button', { class: 'mode-card', onclick: renderCategorySelect },
+          el('span', { class: 'mode-card-title', text: 'Practice by Category' }),
+          el('span', { class: 'mode-card-desc', text: 'Untimed, with explanations and source links.' })
+        )
+      )
+    )
+  );
+}
+
+function categoriesInBank() {
+  const counts = {};
+  for (const q of bank.questions) {
+    counts[q.category] = (counts[q.category] || 0) + 1;
+  }
+  return Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]));
+}
+
+function renderCategorySelect() {
+  const main = document.getElementById('app-main');
+  main.innerHTML = '';
+  const cats = categoriesInBank();
+  const cards = cats.map(([cat, count]) =>
+    el('button', { class: 'mode-card', onclick: () => startPractice(cat) },
+      el('span', { class: 'mode-card-title', text: cat.replace(/-/g, ' ') }),
+      el('span', { class: 'mode-card-desc', text: `${count} question${count === 1 ? '' : 's'}` })
+    )
+  );
+  main.append(
+    el('section', { class: 'screen' },
+      el('button', { class: 'back-link', onclick: renderHome, text: '← Back' }),
+      el('h2', { class: 'screen-title', text: 'Choose a category' }),
+      el('p', { class: 'screen-sub', text: 'Practice one topic at a time, untimed, with explanations.' }),
+      el('div', { class: 'mode-grid' }, ...cards)
+    )
+  );
+}
+
+function startPractice(category) {
+  const seed = Math.floor(Math.random() * 1e9);
+  practice = createPracticeSession(bank, category, 10, seed);
+  renderPractice();
+}
+
+function renderPractice() {
+  const main = document.getElementById('app-main');
+  main.innerHTML = '';
+  const q = practice.questions[practice.currentIndex];
+  const selected = practice.answers[practice.currentIndex];
+  const answered = selected !== null;
+
+  const options = q.options.map((opt, i) => {
+    let cls = 'option';
+    if (answered) {
+      if (i === q.correct) cls += ' correct';
+      else if (i === selected) cls += ' incorrect';
+      else cls += ' dimmed';
+    } else if (selected === i) {
+      cls += ' selected';
+    }
+    return el('button', { class: cls, disabled: answered ? '' : null, onclick: () => selectPractice(i) },
+      el('span', { class: 'option-letter', text: String.fromCharCode(65 + i) }),
+      el('span', { text: opt })
+    );
+  });
+
+  const feedback = answered ? el('div', { class: 'feedback' },
+    el('p', { class: 'feedback-correct', text: selected === q.correct ? 'Correct' : 'Incorrect' }),
+    el('p', { class: 'feedback-explanation', text: q.explanation }),
+    renderSourceLink(q)
+  ) : null;
+
+  const nav = el('div', { class: 'quiz-nav' },
+    el('button', { class: 'btn btn-secondary', onclick: renderCategorySelect }, 'Exit'),
+    el('span', { class: 'progress-text', text: `${practice.currentIndex + 1} / ${practice.questions.length}` }),
+    el('button', { class: 'btn btn-submit', onclick: finishPractice }, 'Finish & review')
+  );
+  const nextBtn = practice.currentIndex < practice.questions.length - 1
+    ? el('button', { class: 'btn btn-primary', onclick: nextPractice, disabled: answered ? null : '' }, 'Next')
+    : null;
+  if (nextBtn) nav.append(nextBtn);
+
+  main.append(
+    el('section', { class: 'screen quiz practice' },
+      el('div', { class: 'progress' },
+        el('span', { text: practice.category.replace(/-/g, ' ') })
+      ),
+      el('div', { class: 'question' },
+        q.image ? el('img', { class: 'question-image', src: q.image, alt: '' }) : null,
+        el('p', { class: 'question-text', text: q.question })
+      ),
+      el('div', { class: 'options' }, ...options),
+      feedback,
+      nav
+    )
+  );
+}
+
+function selectPractice(i) {
+  practice = practiceAnswer(practice, i);
+  renderPractice();
+}
+
+function nextPractice() {
+  practice = practiceNext(practice);
+  renderPractice();
+}
+
+function finishPractice() {
+  const wrong = practiceWrong(practice);
+  renderPracticeReview(wrong);
+}
+
+function renderPracticeReview(wrong) {
+  const main = document.getElementById('app-main');
+  main.innerHTML = '';
+  const total = practice.questions.length;
+  const answeredCorrect = practice.answers.reduce((acc, a, i) => acc + (a === practice.questions[i].correct ? 1 : 0), 0);
+  const correctCount = answeredCorrect;
+  const unanswered = practice.answers.filter((a) => a === null).length;
+
+  const wrongItems = wrong.map((w) =>
+    el('div', { class: 'review-item' },
+      el('p', { class: 'review-question', text: w.question.question }),
+      w.question.image ? el('img', { class: 'question-image', src: w.question.image, alt: '' }) : null,
+      el('p', { class: 'review-your-answer', text: `Your answer: ${w.question.options[w.selected]}` }),
+      el('p', { class: 'review-correct-answer', text: `Correct: ${w.question.options[w.correct]}` }),
+      el('p', { class: 'feedback-explanation', text: w.question.explanation }),
+      renderSourceLink(w.question)
+    )
+  );
+
+  main.append(
+    el('section', { class: 'screen results' },
+      el('div', { class: 'result-banner ' + (wrong.length === 0 && unanswered === 0 ? 'pass' : 'fail') },
+        el('span', { class: 'result-status', text: wrong.length === 0 && unanswered === 0 ? 'ALL CORRECT' : 'REVIEW' }),
+        el('span', { class: 'result-score', text: `${correctCount}/${total}` }),
+        el('span', { class: 'result-threshold', text: `${wrong.length} incorrect${unanswered ? `, ${unanswered} unanswered` : ''}` })
+      ),
+      wrong.length === 0
+        ? el('p', { class: 'screen-sub', text: 'Great job — no incorrect answers to review.' })
+        : el('div', { class: 'review-list' }, ...wrongItems),
+      el('div', { class: 'results-actions' },
+        el('button', { class: 'btn btn-primary', onclick: renderCategorySelect }, 'Practice another category'),
+        el('button', { class: 'btn btn-secondary', onclick: renderHome }, 'Home')
+      )
+    )
+  );
 }
 
 if (typeof window !== 'undefined') {
