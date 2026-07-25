@@ -5,8 +5,19 @@ const PRECACHE = [
   './styles.css',
   './src/main.js',
   './src/theme.js',
+  './src/quiz-engine.js',
+  './src/exam-session.js',
+  './src/practice-session.js',
+  './src/report.js',
+  './src/storage-idb.js',
+  './questions.json',
   './manifest.webmanifest',
-  './icons/icon.svg'
+  './icons/icon.svg',
+  './signs/stop.svg',
+  './signs/no-entry.svg',
+  './signs/yield.svg',
+  './signs/warning-diamond.svg',
+  './signs/informational.svg'
 ];
 
 self.addEventListener('install', (event) => {
