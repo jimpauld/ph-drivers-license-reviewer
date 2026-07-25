@@ -1,0 +1,19 @@
+{
+  "name": "PH Driver's License Reviewer",
+  "short_name": "PH DL Reviewer",
+  "description": "A privacy-first, offline-capable reviewer for the Philippine LTO theoretical driving exam.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0b3d91",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

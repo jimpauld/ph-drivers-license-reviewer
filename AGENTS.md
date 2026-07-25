@@ -29,11 +29,12 @@ web app for reviewing for the Philippine LTO theoretical driving exam.
 
 ## Verification
 
-There is no lint/typecheck tooling yet. When JS tooling is added, record the
-commands here and in the global AGENTS.md format. For now, verify by:
+- **Tests:** `node --test "tests/**/*.test.js"` (zero-dependency, Node 22+ built-in test runner; on Node 18/20 use `node --test tests/`)
+- **Manifest:** `node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8'))"`
+- **Browser:** open `index.html` and exercise the affected flow (manual for the DOM/UI layer)
 
-- Opening `index.html` in a browser and exercising the affected flow.
-- Running any test script added under `tests/` (none yet).
+There is no lint/typecheck tooling yet. When JS tooling is added, record the
+commands here and in the global AGENTS.md format.
 
 ## Agent skills
 

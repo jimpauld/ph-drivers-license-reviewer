@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A privacy-first, offline-capable reviewer for the Philippine LTO theoretical driving exam. No account, no tracking, works offline.">
+  <meta name="theme-color" content="#0b3d91" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+  <title>PH Driver's License Reviewer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1 class="app-title">PH Driver's License Reviewer</h1>
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">
+      <span class="theme-toggle-label">Dark</span>
+    </button>
+  </header>
+
+  <main class="app-main">
+    <section class="home">
+      <p class="home-tagline">Practice the Philippine LTO theoretical driving exam. No account. No tracking. Works offline.</p>
+      <nav class="home-nav">
+        <p class="home-placeholder">Exam modes and practice coming soon.</p>
+      </nav>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>Not affiliated with the LTO. An independent study aid.</p>
+  </footer>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
