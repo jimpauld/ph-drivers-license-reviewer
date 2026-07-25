@@ -2,11 +2,14 @@ import { resolveTheme, applyTheme } from './theme.js';
 import { createSession, answer, goTo, timeRemainingMs, isExpired, isWarning, result } from './exam-session.js';
 import { createPracticeSession, answer as practiceAnswer, next as practiceNext, wrongAnswers as practiceWrong } from './practice-session.js';
 import { buildIssueUrl, buildFlagPayload } from './report.js';
+import { isNewerVersion } from './version.js';
 import { createIndexedDBStorage } from './storage-idb.js';
 
 const THEME_KEY = 'phdlr:theme';
 const REPO = 'jimpauld/ph-drivers-license-reviewer';
 const APP_VERSION = '1.0.0';
+const BANK_URL = `https://raw.githubusercontent.com/${REPO}/main/questions.json`;
+const CHANGELOG_URL = `https://github.com/${REPO}/blob/main/CHANGELOG.md`;
 const storage = createIndexedDBStorage();
 let bank = null;
 let session = null;
@@ -50,8 +53,25 @@ function initTheme() {
 }
 
 async function loadBank() {
-  const res = await fetch('questions.json');
-  bank = await res.json();
+  const stored = await storage.getBank();
+  if (stored) {
+    bank = stored;
+  } else {
+    const res = await fetch('questions.json');
+    bank = await res.json();
+    await storage.setBank(bank);
+  }
+  updateFooterVersion();
+}
+
+function updateFooterVersion() {
+  const footer = document.getElementById('footer-version');
+  if (!footer) return;
+  footer.innerHTML = '';
+  footer.append(
+    document.createTextNode('Question bank v' + bank.version + ' — '),
+    el('a', { href: CHANGELOG_URL, target: '_blank', rel: 'noopener noreferrer', text: 'Changelog' })
+  );
 }
 
 function el(tag, props = {}, ...children) {
@@ -354,6 +374,26 @@ async function downloadReports() {
   a.remove();
 }
 
+async function checkForUpdates() {
+  try {
+    const res = await fetch(BANK_URL, { cache: 'no-store' });
+    if (!res.ok) { toast('Could not check for updates'); return; }
+    const remote = await res.json();
+    if (!remote.version) { toast('Could not read remote version'); return; }
+    if (!isNewerVersion(bank.version, remote.version)) {
+      toast(`You're up to date (v${bank.version})`);
+      return;
+    }
+    if (confirm(`A newer question bank is available (v${remote.version}). Update now?`)) {
+      await storage.setBank(remote);
+      toast(`Updated to v${remote.version}. Reloading...`);
+      setTimeout(() => location.reload(), 1000);
+    }
+  } catch {
+    toast('Update check failed (offline?)');
+  }
+}
+
 function toast(message) {
   const t = el('div', { class: 'toast', text: message });
   document.body.append(t);
@@ -434,6 +474,7 @@ function renderHome() {
     el('div', { class: 'home-links' },
       el('button', { class: 'link-btn', onclick: renderHistory }, 'Exam history'),
       el('button', { class: 'link-btn', onclick: renderBookmarks }, 'Bookmarks'),
+      el('button', { class: 'link-btn', onclick: checkForUpdates }, 'Check for updates'),
       el('button', { class: 'link-btn', onclick: downloadReports }, 'Download my reports')
     )
   );
