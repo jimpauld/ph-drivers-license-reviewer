@@ -88,6 +88,23 @@ test('addBookmark is idempotent per questionId', async () => {
   assert.equal(bookmarks.length, 1);
 });
 
+test('removeBookmark deletes a bookmark', async () => {
+  const s = createMemoryStorage();
+  await s.addBookmark({ questionId: 'q-005', at: 1 });
+  await s.addBookmark({ questionId: 'q-006', at: 2 });
+  await s.removeBookmark('q-005');
+  const bookmarks = await s.getBookmarks();
+  assert.equal(bookmarks.length, 1);
+  assert.equal(bookmarks[0].questionId, 'q-006');
+});
+
+test('removeBookmark is a no-op for a missing bookmark', async () => {
+  const s = createMemoryStorage();
+  await s.removeBookmark('q-999');
+  const bookmarks = await s.getBookmarks();
+  assert.equal(bookmarks.length, 0);
+});
+
 test('saveResume and loadResume round-trip an in-progress exam', async () => {
   const s = createMemoryStorage();
   const state = {

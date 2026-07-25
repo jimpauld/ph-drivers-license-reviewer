@@ -4,7 +4,7 @@ import { createMemoryStorage } from '../src/storage-memory.js';
 
 const METHODS = [
   'saveExam', 'getHistory', 'flagQuestion', 'getFlags', 'exportFlags',
-  'addBookmark', 'getBookmarks', 'saveResume', 'loadResume', 'clearResume',
+  'addBookmark', 'getBookmarks', 'removeBookmark', 'saveResume', 'loadResume', 'clearResume',
   'getSetting', 'setSetting'
 ];
 
