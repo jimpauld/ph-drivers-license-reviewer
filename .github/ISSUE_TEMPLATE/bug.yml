@@ -1,0 +1,25 @@
+name: Bug report
+description: Report a bug in the app
+labels: ["needs-triage"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Steps to reproduce and what you expected vs. what you saw.
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and browser
+      description: e.g. iPhone 12, Safari; or Android, Chrome
+    validations:
+      required: false
+  - type: input
+    id: app-version
+    attributes:
+      label: App / bank version
+      description: Shown in the app footer (e.g. v1.0.0)
+    validations:
+      required: false

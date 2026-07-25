@@ -1,0 +1,37 @@
+name: Incorrect question
+description: Report a question with a wrong answer, unclear wording, or a missing source
+labels: ["needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for flagging an incorrect question. Please include the
+        Question ID (shown in the app, e.g. `q-001`) and a source citation.
+  - type: input
+    id: question-id
+    attributes:
+      label: Question ID
+      description: The question's id from questions.json (e.g. q-001)
+    validations:
+      required: true
+  - type: textarea
+    id: what-is-wrong
+    attributes:
+      label: What's wrong?
+      description: The wrong answer, unclear wording, missing image, etc.
+    validations:
+      required: true
+  - type: textarea
+    id: correct-answer
+    attributes:
+      label: Correct answer and source
+      description: Cite the Filipino Driver's Manual page or Republic Act section.
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: App / bank version
+      description: Shown in the app footer (e.g. v1.0.0)
+    validations:
+      required: false

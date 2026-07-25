@@ -475,7 +475,8 @@ function renderHome() {
       el('button', { class: 'link-btn', onclick: renderHistory }, 'Exam history'),
       el('button', { class: 'link-btn', onclick: renderBookmarks }, 'Bookmarks'),
       el('button', { class: 'link-btn', onclick: checkForUpdates }, 'Check for updates'),
-      el('button', { class: 'link-btn', onclick: downloadReports }, 'Download my reports')
+      el('button', { class: 'link-btn', onclick: downloadReports }, 'Download my reports'),
+      el('button', { class: 'link-btn', onclick: renderAbout }, 'About')
     )
   );
   main.append(el('section', { class: 'screen' }, ...children));
@@ -553,6 +554,31 @@ async function toggleBookmark(question) {
 async function removeBookmark(questionId) {
   await storage.removeBookmark(questionId);
   renderBookmarks();
+}
+
+function renderAbout() {
+  const main = document.getElementById('app-main');
+  main.innerHTML = '';
+  main.append(
+    el('section', { class: 'screen' },
+      el('button', { class: 'back-link', onclick: renderHome, text: '← Back' }),
+      el('h2', { class: 'screen-title', text: 'About' }),
+      el('p', { class: 'screen-sub', text: 'PH Driver\'s License Reviewer is a privacy-first, offline-capable study aid for the Philippine LTO theoretical driving exam.' }),
+      el('h3', { class: 'results-section-title', text: 'Privacy' }),
+      el('p', { class: 'about-text', text: 'No account. No tracking. No analytics. No backend. All your progress, bookmarks, and flags are stored only in your browser.' }),
+      el('h3', { class: 'results-section-title', text: 'Sources' }),
+      el('p', { class: 'about-text', text: 'Questions are derived from official Philippine government sources (Filipino Driver\'s Manual Vol. 1 & Vol. 2, Republic Acts) under RA 8293 Section 176 (public domain).' }),
+      el('h3', { class: 'results-section-title', text: 'Disclaimer' }),
+      el('p', { class: 'about-text', text: 'This project is not affiliated with, endorsed by, or connected to the Land Transportation Office (LTO) of the Philippines. It is an independent study aid. "LTO" and related marks belong to the Philippine government.' }),
+      el('h3', { class: 'results-section-title', text: 'Contributing' }),
+      el('p', { class: 'about-text', text: 'Found a wrong question? Use the Flag button on any question, or open an issue on GitHub.' }),
+      el('div', { class: 'about-links' },
+        el('a', { class: 'link-btn', href: `https://github.com/${REPO}`, target: '_blank', rel: 'noopener noreferrer', text: 'GitHub repo' }),
+        el('a', { class: 'link-btn', href: `https://github.com/${REPO}/blob/main/CONTRIBUTING.md`, target: '_blank', rel: 'noopener noreferrer', text: 'Contributing guide' }),
+        el('a', { class: 'link-btn', href: CHANGELOG_URL, target: '_blank', rel: 'noopener noreferrer', text: 'Changelog' })
+      )
+    )
+  );
 }
 
 function renderCategorySelect() {
