@@ -233,8 +233,13 @@ html, body {
 
 .question-image {
   max-width: 120px;
-  height: auto;
   margin-bottom: 0.75rem;
+}
+
+.question-image svg {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .question-text {

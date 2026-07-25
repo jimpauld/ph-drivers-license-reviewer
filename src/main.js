@@ -76,6 +76,20 @@ function renderSourceLink(question) {
   return el('p', { class: 'feedback-source', text: `Source: ${question.source}` });
 }
 
+const svgCache = new Map();
+function inlineSvg(src) {
+  const container = el('div', { class: 'question-image' });
+  if (svgCache.has(src)) {
+    container.innerHTML = svgCache.get(src);
+  } else {
+    fetch(src).then((r) => r.text()).then((svg) => {
+      svgCache.set(src, svg);
+      container.innerHTML = svg;
+    }).catch(() => {});
+  }
+  return container;
+}
+
 function renderQuestionActions(question, selected) {
   return el('div', { class: 'question-actions' },
     el('button', { class: 'question-action-btn', onclick: () => openFlagModal(question, selected) }, 'Flag this question'),
@@ -193,7 +207,7 @@ function renderQuiz() {
     el('section', { class: 'screen quiz' },
       progress,
       el('div', { class: 'question' },
-        q.image ? el('img', { class: 'question-image', src: q.image, alt: '' }) : null,
+        q.image ? inlineSvg(q.image) : null,
         el('p', { class: 'question-text', text: q.question }),
         renderQuestionActions(q, session.answers[session.currentIndex])
       ),
@@ -570,7 +584,7 @@ function renderPractice() {
         el('span', { text: practice.category.replace(/-/g, ' ') })
       ),
       el('div', { class: 'question' },
-        q.image ? el('img', { class: 'question-image', src: q.image, alt: '' }) : null,
+        q.image ? inlineSvg(q.image) : null,
         el('p', { class: 'question-text', text: q.question }),
         renderQuestionActions(q, practice.answers[practice.currentIndex])
       ),
@@ -607,7 +621,7 @@ function renderPracticeReview(wrong) {
   const wrongItems = wrong.map((w) =>
     el('div', { class: 'review-item' },
       el('p', { class: 'review-question', text: w.question.question }),
-      w.question.image ? el('img', { class: 'question-image', src: w.question.image, alt: '' }) : null,
+      w.question.image ? inlineSvg(w.question.image) : null,
       el('p', { class: 'review-your-answer', text: `Your answer: ${w.question.options[w.selected]}` }),
       el('p', { class: 'review-correct-answer', text: `Correct: ${w.question.options[w.correct]}` }),
       el('p', { class: 'feedback-explanation', text: w.question.explanation }),
