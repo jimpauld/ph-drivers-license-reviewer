@@ -4,6 +4,7 @@ export function createMemoryStorage() {
   const bookmarks = new Map();
   const settings = new Map();
   let resume = null;
+  let storedBank = null;
 
   return {
     async saveExam(exam) {
@@ -45,6 +46,12 @@ export function createMemoryStorage() {
     },
     async setSetting(key, value) {
       settings.set(key, value);
+    },
+    async getBank() {
+      return storedBank;
+    },
+    async setBank(b) {
+      storedBank = b;
     }
   };
 }

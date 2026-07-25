@@ -1,6 +1,6 @@
 const DB_NAME = 'phdlr';
 const DB_VERSION = 1;
-const STORES = ['exams', 'flags', 'bookmarks', 'settings', 'resume'];
+const STORES = ['exams', 'flags', 'bookmarks', 'settings', 'resume', 'bank'];
 
 function openDB() {
   return new Promise((resolve, reject) => {
@@ -93,6 +93,15 @@ export function createIndexedDBStorage() {
     async setSetting(key, value) {
       const d = await db();
       await promisifyRequest(tx(d, 'settings', 'readwrite').put(value, key));
+    },
+    async getBank() {
+      const d = await db();
+      const out = await promisifyRequest(tx(d, 'bank', 'readonly').get('current'));
+      return out || null;
+    },
+    async setBank(b) {
+      const d = await db();
+      await promisifyRequest(tx(d, 'bank', 'readwrite').put(b, 'current'));
     }
   };
 }

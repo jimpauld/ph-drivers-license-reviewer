@@ -105,6 +105,14 @@ test('removeBookmark is a no-op for a missing bookmark', async () => {
   assert.equal(bookmarks.length, 0);
 });
 
+test('setBank stores a bank and getBank returns it', async () => {
+  const s = createMemoryStorage();
+  assert.equal(await s.getBank(), null);
+  const b = { version: '1.2.3', questions: [] };
+  await s.setBank(b);
+  assert.deepEqual(await s.getBank(), b);
+});
+
 test('saveResume and loadResume round-trip an in-progress exam', async () => {
   const s = createMemoryStorage();
   const state = {

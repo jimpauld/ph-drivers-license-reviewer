@@ -97,6 +97,16 @@ html, body {
   margin: 0;
 }
 
+.app-footer a {
+  color: var(--text-muted);
+  text-decoration: underline;
+}
+
+#footer-version {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;

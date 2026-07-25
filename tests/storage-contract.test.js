@@ -5,7 +5,7 @@ import { createMemoryStorage } from '../src/storage-memory.js';
 const METHODS = [
   'saveExam', 'getHistory', 'flagQuestion', 'getFlags', 'exportFlags',
   'addBookmark', 'getBookmarks', 'removeBookmark', 'saveResume', 'loadResume', 'clearResume',
-  'getSetting', 'setSetting'
+  'getSetting', 'setSetting', 'getBank', 'setBank'
 ];
 
 test('memory storage exposes the full storage interface', () => {
