@@ -389,4 +389,102 @@ html, body {
 .results-actions {
   display: flex;
   justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.back-link {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font: inherit;
+  padding: 0 0 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.progress-text {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.feedback {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.feedback-correct {
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+}
+
+.feedback-explanation {
+  margin: 0 0 0.5rem;
+  color: var(--text);
+  line-height: 1.45;
+}
+
+.feedback-source {
+  display: inline-block;
+  color: var(--accent);
+  font-size: 0.85rem;
+  text-decoration: none;
+  margin: 0;
+}
+
+.feedback-source:hover {
+  text-decoration: underline;
+}
+
+.option.correct {
+  border-color: var(--success);
+  background: color-mix(in srgb, var(--success) 14%, var(--bg-elevated));
+}
+
+.option.incorrect {
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 14%, var(--bg-elevated));
+}
+
+.option.dimmed {
+  opacity: 0.5;
+}
+
+.option:disabled {
+  cursor: default;
+}
+
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.review-item {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.85rem 1rem;
+}
+
+.review-question {
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.review-your-answer {
+  margin: 0 0 0.25rem;
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+.review-correct-answer {
+  margin: 0 0 0.5rem;
+  color: var(--success);
+  font-size: 0.9rem;
 }
