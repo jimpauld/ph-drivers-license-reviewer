@@ -5,8 +5,9 @@ government sources using opencode AI agents.
 
 ## Prerequisites
 
-- The Filipino Driver's Manual (FDM) Vol. 1 & Vol. 2 PDFs, downloaded from
-  https://lto.gov.ph (see `docs/fdm-sources.md` for direct links).
+- The Filipino Driver's Manual (FDM) Vol. 1 & Vol. 2 PDFs, placed in
+  `tools/fdm-pdfs/` (see `tools/fdm-sources.md` for where to get them).
+  This folder is gitignored — the PDFs are not committed.
 - opencode with the recommended models available:
   - `opencode-go/deepseek-v4-pro` — bulk question generation
   - `opencode-go/kimi-k2.7-code` — verification / cross-check
@@ -16,13 +17,15 @@ government sources using opencode AI agents.
 
 ### 1. Parse the PDFs
 
-Use the `/pdf` skill to extract text from the FDM PDFs:
+Use the `/pdf` skill to extract text from the local FDM PDFs:
 
 ```
-/pdf — extract text from FDM-Vol-1.pdf and FDM-Vol-2.pdf, chunk by section
+/pdf — extract text from tools/fdm-pdfs/FDM-Vol-1.pdf and tools/fdm-pdfs/FDM-Vol-2.pdf,
+       chunk by section
 ```
 
-Save chunks to `tools/fdm-chunks/vol1/*.txt` and `tools/fdm-chunks/vol2/*.txt`.
+Save chunks to `tools/fdm-chunks/vol1/*.txt` and `tools/fdm-chunks/vol2/*.txt`
+(also gitignored).
 
 ### 2. Generate questions (bulk)
 

@@ -3,7 +3,17 @@
 The Filipino Driver's Manual (FDM) is published by the Land Transportation
 Office (LTO) and is available as a free PDF on https://lto.gov.ph.
 
-## Direct links (verify before use — LTO occasionally reorganizes the site)
+## Where to put them
+
+Place the downloaded PDFs in `tools/fdm-pdfs/` (gitignored — they are not
+committed to the repo). Suggested filenames:
+
+- `tools/fdm-pdfs/FDM-Vol-1.pdf`
+- `tools/fdm-pdfs/FDM-Vol-2.pdf`
+
+The `/pdf` skill and the generation pipeline read from this location.
+
+## Where to download them (if not already downloaded)
 
 - **FDM Vol. 1** (2nd Edition, 2021, ~200 pages): licensing, road signs,
   driving fundamentals, road courtesy, safety, rights and duties.

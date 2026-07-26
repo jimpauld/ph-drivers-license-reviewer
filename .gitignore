@@ -23,3 +23,9 @@ node_modules/
 
 # Local agent working notes (Matt Pocock skills scratch space)
 .scratch/
+
+# Local source PDFs and generated chunks (T10 pipeline — not committed)
+tools/fdm-pdfs/
+tools/fdm-chunks/
+tools/generated/
+tools/verification-report.md
