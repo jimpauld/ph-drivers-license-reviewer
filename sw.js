@@ -1,4 +1,4 @@
-const CACHE = 'phdlr-shell-v1';
+const CACHE = 'phdlr-shell-v2';
 const PRECACHE = [
   './',
   './index.html',
