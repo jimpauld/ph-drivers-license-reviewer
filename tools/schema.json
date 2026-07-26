@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Question bank",
+  "type": "object",
+  "required": ["version", "language", "questions"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "language": { "type": "string", "enum": ["en", "fil"] },
+    "questions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/question" }
+    }
+  },
+  "$defs": {
+    "question": {
+      "type": "object",
+      "required": ["id", "category", "subcategory", "difficulty", "question", "options", "correct", "explanation", "source"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^q-\\d{3,}$" },
+        "category": {
+          "type": "string",
+          "enum": ["road-signs", "traffic-rules", "speed-limits", "defensive-driving", "licensing", "vehicle-equipment", "penalties", "republic-acts", "vehicle-registration", "expressway"]
+        },
+        "subcategory": { "type": "string" },
+        "difficulty": { "type": "string", "enum": ["easy", "medium", "hard"] },
+        "question": { "type": "string", "minLength": 1 },
+        "image": { "type": "string" },
+        "options": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "string" } },
+        "correct": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "explanation": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "sourceUrl": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  }
+}
