@@ -12,6 +12,8 @@ government sources using opencode AI agents.
   - `opencode-go/deepseek-v4-pro` — bulk question generation
   - `opencode-go/kimi-k2.7-code` — verification / cross-check
   - `opencode-go/glm-5.2` — PDF chunk structuring (or use the `/pdf` skill)
+  - `@image-analyzer` — validate sign SVGs against the manual's illustrations
+    and classify sign images extracted from PDF pages
 
 ## Pipeline
 
@@ -55,6 +57,11 @@ objects matching the schema in `tools/schema.json`.
 Run a verification agent with `tools/prompts/verify.md` using
 `opencode-go/kimi-k2.7-code`. It re-derives the answer from the source text
 and flags disagreements. Output: `tools/verification-report.md`.
+
+For road-sign questions, also run `@image-analyzer` to validate each
+generated SVG against the corresponding illustration in the FDM. This catches
+perceptual errors (e.g., a YIELD sign drawn point-up instead of inverted)
+that text review misses.
 
 ### 4. Human review
 
