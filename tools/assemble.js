@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const GENERATED_DIR = new URL('../generated/', import.meta.url);
+const GENERATED_DIR = new URL('./generated/', import.meta.url);
 const OUTPUT = new URL('../questions.json', import.meta.url);
 
 const CATEGORY_TARGETS = {

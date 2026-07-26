@@ -1,4 +1,4 @@
-const CACHE = 'phdlr-shell-v2';
+const CACHE = 'phdlr-shell-v3';
 const PRECACHE = [
   './',
   './index.html',
@@ -16,7 +16,7 @@ const PRECACHE = [
   './signs/stop.svg',
   './signs/no-entry.svg',
   './signs/yield.svg',
-  './signs/warning-diamond.svg',
+  './signs/warning-triangle.svg',
   './signs/informational.svg'
 ];
 
